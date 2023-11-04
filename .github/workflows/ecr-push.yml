@@ -16,7 +16,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           sudo docker build -t python-application ./Application/
-          $(aws ecr get-login --no-include-email)
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 868669587970.dkr.ecr.us-east-1.amazonaws.com
           sudo docker tag python-application:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
           sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
 
