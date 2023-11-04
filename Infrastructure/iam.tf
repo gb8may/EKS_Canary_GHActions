@@ -23,7 +23,7 @@ resource "aws_iam_policy" "github_actions_permissions" {
     Version = "2012-10-17",
     Statement = [
       {
-        Action = ["ecr:GetAuthorizationToken", "ecr:BatchCheckLayerAvailability", "ecr:GetDownloadUrlForLayer", "ecr:GetRepositoryPolicy", "ecr:ListImages", "ecr:DescribeRepositories", "ecr:GetLifecyclePolicy", "ecr:GetLifecyclePolicyPreview", "ecr:GetImagePolicy", "ecr:GetImage", "ecr:BatchGetImage", "ecr:GetRepositoryPolicy", "ecr:GetRepositoryPolicyPreview"],
+        Action   = ["ecr:GetAuthorizationToken", "ecr:BatchCheckLayerAvailability", "ecr:GetDownloadUrlForLayer", "ecr:GetRepositoryPolicy", "ecr:ListImages", "ecr:DescribeRepositories", "ecr:GetLifecyclePolicy", "ecr:GetLifecyclePolicyPreview", "ecr:GetImagePolicy", "ecr:GetImage", "ecr:BatchGetImage", "ecr:GetRepositoryPolicy", "ecr:GetRepositoryPolicyPreview"],
         Effect   = "Allow",
         Resource = "*"
       }
