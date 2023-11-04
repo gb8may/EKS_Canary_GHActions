@@ -1,0 +1,10 @@
+.terraform
+terraform.tfstate
+*.tfstate*
+.git
+secret
+.terraform.lock.hcl
+lambda_function_payload.zip
+lambda_function_payload.hash
+package.zip
+main.py.debug
