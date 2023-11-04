@@ -47,3 +47,7 @@ resource "aws_security_group" "gh-runner-sg" {
     cidr_blocks = [var.my_ip_addr]
   }
 }
+
+output "gh-runner_arn" {
+  value = aws_instance.gh-runner.arn
+}
