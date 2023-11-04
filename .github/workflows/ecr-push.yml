@@ -15,7 +15,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t Application/application.py:latest .
+          docker build -t application.py:latest Application/.
           $(aws ecr get-login --no-include-email)
           docker tag application.py:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/application.py:latest
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/application.py:latest
