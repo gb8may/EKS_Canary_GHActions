@@ -15,13 +15,13 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t python-application ./Application/
+          sudo docker build -t python-application ./Application/
           $(aws ecr get-login --no-include-email)
-          docker tag python-application:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/python-application:latest
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/python-application:latest
+          sudo docker tag python-application:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/python-application:latest
+          sudo docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/python-application:latest
 
       - name: Logout from ECR
         run: |
-          docker logout ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          sudo docker logout ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
