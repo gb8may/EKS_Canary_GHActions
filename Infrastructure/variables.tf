@@ -13,3 +13,7 @@ variable "runner_instance_type" {
 variable "my_ip_addr" {
   default = "99.255.0.36/32"
 }
+
+variable "private_key" {
+  default = "New_Pair_Mac"
+}

@@ -3,11 +3,11 @@ name: Push Docker Image to ECR
 on:
   push:
     branches:
-      - main  # Replace with the branch you want to trigger the workflow
+      - main
 
 jobs:
   push-to-ecr:
-    runs-on: [self-hosted]  # Specify the name of your self-hosted runner as a label
+    runs-on: [self-hosted]
 
     steps:
       - name: Checkout Code
@@ -28,7 +28,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t application.py:latest .
+          docker build -t Application/application.py:latest .
           $(aws ecr get-login --no-include-email)
           docker tag application.py:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/application.py:latest
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/application.py:latest
