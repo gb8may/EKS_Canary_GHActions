@@ -19,11 +19,28 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
+data "template_file" "runner-userdata" {
+  template = file("runner-userdata.sh")
+}
+
+data "template_cloudinit_config" "runner-userdata" {
+
+  gzip          = false
+  base64_encode = false
+
+  part {
+    content_type = "text/x-shellscript"
+    content      = data.template_file.runner-userdata.rendered
+  }
+
+}
+
 resource "aws_instance" "gh-runner" {
   ami                  = data.aws_ami.ubuntu.id
   instance_type        = var.runner_instance_type
   key_name             = var.private_key
   iam_instance_profile = aws_iam_instance_profile.runner_instance_profile.name
+  user_data            = data.template_cloudinit_config.runner-userdata.rendered
 
   tags = {
     Name = "GH Self-hosted Runner"
