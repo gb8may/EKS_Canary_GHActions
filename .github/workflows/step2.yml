@@ -1,0 +1,22 @@
+name: Application Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-to-eks:
+    runs-on: [self-hosted]
+    timeout-minutes: 10
+        
+    steps:
+      - name: Deploy to EKS
+        run: |
+          kubectl apply -f ./Application/deployment.yaml
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+
+      - name: Logout from ECR
+        run: |
+          sudo docker logout 868669587970.dkr.ecr.us-east-1.amazonaws.com
