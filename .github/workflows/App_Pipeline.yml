@@ -25,6 +25,7 @@ jobs:
           sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
 
   Image-Scanner:
+    needs: Push-to-ecr
     runs-on: [self-hosted]
     timeout-minutes: 10
 
