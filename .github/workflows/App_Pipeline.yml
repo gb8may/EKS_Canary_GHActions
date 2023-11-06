@@ -23,8 +23,9 @@ jobs:
           sudo docker build -t python-application ./Application/
           sudo docker tag python-application:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
           sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
-        
+
   deploy-to-eks:
+    needs: push-to-ecr
     runs-on: [self-hosted]
     timeout-minutes: 10
         
