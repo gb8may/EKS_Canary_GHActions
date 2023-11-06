@@ -1,44 +1,44 @@
-resource "aws_eks_cluster" "canary-eks-cluster" {
-  name     = "canary-eks-cluster"
-  role_arn = aws_iam_role.eks_role.arn
-  vpc_config {
-    subnet_ids = [
-        aws_subnet.public-subnet-a.id,
-        aws_subnet.public-subnet-b.id
-    ]
-  }
-}
+module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "~> 19.0"
 
-resource "aws_eks_node_group" "canary-eks-cluster-node-group" {
-  cluster_name    = aws_eks_cluster.canary-eks-cluster.name
-  node_group_name = "canary-eks-worker-nodes"
-  node_role_arn   = aws_iam_role.eks_node_role.arn
+  cluster_name    = "eks-canary-cluster"
+  cluster_version = "1.27"
 
-  disk_size = 20
-  instance_types = ["t2.micro"]
+  cluster_endpoint_public_access = true
 
-  subnet_ids      = [
-    aws_subnet.public-subnet-a.id,
-    aws_subnet.public-subnet-b.id
-  ]
-
-  scaling_config {
-    desired_size = 1
-    max_size     = 2
-    min_size     = 1
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
   }
 
-  update_config {
-    max_unavailable = 1
+  vpc_id                   = aws_vpc.runner-vpc.id
+  subnet_ids               = [aws_subnet.public-subnet-a.id, aws_subnet.public-subnet-b.id]
+
+  self_managed_node_group_defaults = {
+    instance_type                          = "t2.micro"
+    update_launch_template_default_version = true
+    iam_role_additional_policies = {
+      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+    }
   }
 
-  depends_on = [
-    aws_iam_role_policy_attachment.AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.AmazonEC2ContainerRegistryReadOnly,
-  ]
+  self_managed_node_groups = {
+    one = {
+      name         = "node-group-1"
+      max_size     = 2
+      desired_size = 1
+    }
+  }
 }
 
 output "kubeconfig" {
-  value = aws_eks_cluster.canary-eks-cluster
+  value = module.eks
 }

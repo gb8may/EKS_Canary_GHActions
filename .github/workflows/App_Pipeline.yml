@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  push-to-ecr:
+  Push-to-ecr:
     runs-on: [self-hosted]
     timeout-minutes: 10
 
@@ -24,8 +24,21 @@ jobs:
           sudo docker tag python-application:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
           sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
 
-  deploy-to-eks:
-    needs: push-to-ecr
+  Image-Scanner:
+    runs-on: [self-hosted]
+    timeout-minutes: 10
+
+    steps:
+      - name: Scan ECR Images with Trivy
+        run: |
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <YOUR_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
+          images=($(aws ecr describe-repositories --region us-east-1 --repository-names <REPOSITORY_NAME> | jq -r '.repositories[].repositoryUri'))
+          for image in "${images[@]}"; do
+            trivy image -q --severity HIGH,CRITICAL --exit-code 1 "$image:latest"
+          done
+
+  Deploy-to-eks:
+    needs: Push-to-ecr
     runs-on: [self-hosted]
     timeout-minutes: 10
         
