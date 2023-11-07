@@ -57,3 +57,8 @@ jobs:
       - name: Logout from ECR
         run: |
           sudo docker logout 868669587970.dkr.ecr.us-east-1.amazonaws.com
+
+workflow_run:
+  workflows: ["Application Pipeline"]
+  types:
+    - completed
