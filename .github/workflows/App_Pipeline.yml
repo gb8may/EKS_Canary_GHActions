@@ -20,7 +20,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          sudo docker build -t python-application ./Application/
+          sudo docker build -t python-application ./Hello-World/
           sudo docker tag python-application:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
           sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
 
@@ -33,7 +33,7 @@ jobs:
       - name: Scan ECR Images with Trivy
         run: |
           aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 868669587970.dkr.ecr.us-east-1.amazonaws.com
-          sudo trivy image -q --severity CRITICAL --exit-code 1 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
+          sudo trivy image -q --severity HIGH,CRITICAL --exit-code 1 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
 
   Deploy-to-eks:
     needs: Image-Scanner
