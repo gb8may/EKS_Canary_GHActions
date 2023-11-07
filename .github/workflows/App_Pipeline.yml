@@ -39,6 +39,7 @@ jobs:
               echo "Trivy scan passed, no critical vulnerabilities found."
             else
               echo "Trivy scan failed, but ignoring it to continue the workflow."
+              echo "::error::Vulnerabilities found by Trivy"
             fi
           done
 
@@ -57,8 +58,3 @@ jobs:
       - name: Logout from ECR
         run: |
           sudo docker logout 868669587970.dkr.ecr.us-east-1.amazonaws.com
-
-workflow_run:
-  workflows: ["Application Pipeline"]
-  types:
-    - completed
