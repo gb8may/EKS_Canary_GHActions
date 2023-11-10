@@ -43,18 +43,17 @@ jobs:
             fi
           done
 
-  Deploy-to-eks:
-    needs: Image-Scanner
-    runs-on: [self-hosted]
-    timeout-minutes: 10
+  # Deploy-to-eks:
+  #   needs: Image-Scanner
+  #   runs-on: [self-hosted]
+  #   timeout-minutes: 10
         
-    steps:
-      - name: Deploy to EKS
-        run: |
-          kubectl apply -f ./Application/deployment.yaml
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+  #   steps:
+  #     - name: Deploy to EKS
+  #       run: |
+  #         aws eks --region us-east-1 update-kubeconfig --name canary-eks-cluster
+  #         kubectl apply -f ./Application/deployment.yaml
 
-      - name: Logout from ECR
-        run: |
-          sudo docker logout 868669587970.dkr.ecr.us-east-1.amazonaws.com
+  #     - name: Logout from ECR
+  #       run: |
+  #         sudo docker logout 868669587970.dkr.ecr.us-east-1.amazonaws.com
