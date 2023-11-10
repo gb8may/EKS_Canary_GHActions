@@ -1,0 +1,21 @@
+jobs:
+  deploy:
+    name: Configure AWS Credentials
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::868669587970:role/GitHubActionsRunnerRole
+        aws-region: us-east-1
+    - name: Login to EKS
+      run: |
+        aws eks --region us-east-1 update-kubeconfig --name canary-elk-cluster
+    - name: Deploy to EKS
+      run: |
+        kubectl get po
