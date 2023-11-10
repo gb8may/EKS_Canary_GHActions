@@ -17,7 +17,7 @@ jobs:
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::868669587970:role/GitHubActionsRunnerRole
+        role-to-assume: arn:aws:iam::868669587970:role/GitHubActionsPipeline
         aws-region: us-east-1
     - name: Login to EKS
       run: |
