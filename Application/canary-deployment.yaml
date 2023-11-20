@@ -6,12 +6,12 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: python-app
+      app: python-app-canary
       tier: canary
   template:
     metadata:
       labels:
-        app: python-app
+        app: python-app-canary
         tier: canary
     spec:
       containers:
@@ -24,7 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: python-app-service
+  name: python-app-canary-service
 spec:
   selector:
     app: python-app
