@@ -1,9 +1,11 @@
-FROM python:2.7
+FROM python:3.8-slim
 
-# Add sample application
-ADD application.py /tmp/application.py
+WORKDIR /Application
+
+COPY . /Application
 
 EXPOSE 80
 
-# Run it
-ENTRYPOINT ["python", "/tmp/application.py"]
+ENV NAME World
+
+CMD ["python", "application.py"]
