@@ -70,7 +70,6 @@ jobs:
           kubectl scale --replicas=9 deployment hello-1-0-0 -n canary-deploy
 
   Canary-Deploy-V2:
-    needs: Canary-Deploy-V1
     runs-on: [self-hosted]
         
     steps:
@@ -95,7 +94,6 @@ jobs:
           kubectl apply -f ./Manifests/lb3.yaml
 
   Decommission-V1:
-    needs: Canary-Deploy-V2
     runs-on: [self-hosted]
                 
     steps:
