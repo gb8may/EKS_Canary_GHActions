@@ -1,8 +1,8 @@
 FROM python:3.8-slim
 
-WORKDIR /Application
+WORKDIR /app
 
-COPY . /Application
+COPY . /app
 
 EXPOSE 80
 
