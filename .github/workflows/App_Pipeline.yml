@@ -53,13 +53,7 @@ jobs:
 
       - name: Set Up kubectl
         run: |
-          creds_json=$(aws sts assume-role --role-arn arn:aws:iam::868669587970:role/GitHubActionsRunnerRole --role-session-name gh-actions)
-          export AWS_ACCESS_KEY_ID=$(echo "$creds_json" | jq .Credentials.AccessKeyId |tr -d '"')
-          export AWS_SECRET_ACCESS_KEY=$(echo "$creds_json" | jq .Credentials.SecretAccessKey| tr -d '"')
-          export AWS_SESSION_TOKEN=$(echo "$creds_json" | jq .Credentials.SessionToken|tr -d '"')
-          export AWS_DEFAULT_REGION=us-east-1
-          aws sts get-caller-identity
-          aws eks update-kubeconfig --name canary-elk-cluster
+          aws eks --region us-east-1 update-kubeconfig --name canary-elk-cluster
 
       - name: Deploy to Canary
         run: |
