@@ -7,12 +7,10 @@ spec:
   selector:
     matchLabels:
       app: python-app-canary
-      tier: canary
   template:
     metadata:
       labels:
         app: python-app-canary
-        tier: canary
     spec:
       containers:
         - name: python-app
