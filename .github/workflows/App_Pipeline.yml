@@ -65,7 +65,7 @@ jobs:
 
       - name: Run Canary Analysis
         run: |
-          # Run your canary analysis scripts or tools
+          # Run your canary analysis scripts or tools.
 
       - name: Promote canary to production
         if: success()
