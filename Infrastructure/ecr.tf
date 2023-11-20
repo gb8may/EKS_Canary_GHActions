@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "eks-poc-repository" {
-  name                 = "python-application"
+  name                 = "http-echo"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {

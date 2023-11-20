@@ -20,8 +20,8 @@ jobs:
 
       - name: Build and Push Canary Docker Image
         run: |
-          sudo docker build -t python-app ./Application/
-          sudo docker tag http-echo:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/http-echo:latest
+          sudo docker pull hashicorp/http-echo
+          sudo docker tag hashicorp/http-echo:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/http-echo:latest
           sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/http-echo:latest
 
   Image-Scanner:
