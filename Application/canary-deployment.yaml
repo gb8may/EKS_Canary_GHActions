@@ -1,16 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-app
+  name: python-app-canary
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: python-app
+      tier: canary
   template:
     metadata:
       labels:
         app: python-app
+        tier: canary
     spec:
       containers:
         - name: python-app
