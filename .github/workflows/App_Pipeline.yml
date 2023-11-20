@@ -18,11 +18,11 @@ jobs:
         run: |
           aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 868669587970.dkr.ecr.us-east-1.amazonaws.com
 
-      - name: Build and Push Docker Image
+      - name: Build and Push Canary Docker Image
         run: |
-          sudo docker build -t python-application ./Application/
-          sudo docker tag python-application:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
-          sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/python-application:latest
+          sudo docker build -t python-app ./Application/
+          sudo docker tag http-echo:latest 868669587970.dkr.ecr.us-east-1.amazonaws.com/http-echo:latest
+          sudo docker push 868669587970.dkr.ecr.us-east-1.amazonaws.com/http-echo:latest
 
   Image-Scanner:
     needs: Push-image-to-ECR
@@ -33,7 +33,7 @@ jobs:
       - name: Scan ECR Images with Trivy
         run: |
           aws ecr get-login-password --region us-east-1 | sudo docker login --username AWS --password-stdin 868669587970.dkr.ecr.us-east-1.amazonaws.com
-          images=($(aws ecr describe-repositories --region us-east-1 --repository-names python-application | jq -r '.repositories[].repositoryUri'))
+          images=($(aws ecr describe-repositories --region us-east-1 --repository-names http-echo | jq -r '.repositories[].repositoryUri'))
           for image in "${images[@]}"; do
             if sudo trivy image -q --severity HIGH,CRITICAL --exit-code 1 "$image:latest"; then
               echo "Trivy scan passed, no critical vulnerabilities found."
@@ -43,7 +43,7 @@ jobs:
             fi
           done
 
-  Canary-Deploy:
+  Canary-Deploy-V1:
     needs: Image-Scanner
     runs-on: [self-hosted]
 
@@ -57,22 +57,52 @@ jobs:
 
       - name: Application Deployment
         run: |
-          kubectl apply -f ./Application/canary-deployment.yaml
+          kubectl apply -f ./Manifests/canary-deployment.yaml
+          kubectl apply -f ./Manifests/lb1.yaml
       
       - name: Wait for deployment to stabilize
         run: |
-          kubectl rollout status deployment/python-app
+          kubectl rollout status deployment/hello-1-0-0
 
-      - name: Run Canary Analysis
-        run: |
-          # Run your canary analysis scripts or tools.
-
-      - name: Promote canary to production
+      - name: Scale canary replicas
         if: success()
         run: |
-          kubectl apply -f ./Application/promote-deployment.yaml
+          kubectl scale --replicas=9 deployment hello-1-0-0 -n canary-deploy
+
+  Canary-Deploy-V2:
+    needs: Canary-Deploy-V1
+    runs-on: [self-hosted]
+        
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy new version
+        if: success()
+        run: |
+          kubectl apply -f ./Manifests/deployment.yaml
+          kubectl apply -f ./Manifests/lb2.yaml
     
       - name: Wait for production deployment to stabilize
         if: success()
         run: |
-          kubectl rollout status deployment/python-app
+          kubectl rollout status deployment/hello-1-1-0
+
+      - name: Resize production replicas
+        if: success()
+        run: |
+          kubectl scale --replicas=2 deployment hello-1-1-0 -n canary-deploy
+          kubectl apply -f ./Manifests/lb3.yaml
+
+  Decommission-V1:
+    needs: Canary-Deploy-V2
+    runs-on: [self-hosted]
+                
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Removing old version
+        if: success()
+        run: |
+          kubectl delete deployments hello-1-0-0 -n canary-deploy
