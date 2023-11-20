@@ -1,7 +1,10 @@
 #!/bin/bash
 
 apt-get update
-sudo apt-get install awscli -y
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.12.0.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
 sudo apt-get install jq -y
 
 #Install Trivy

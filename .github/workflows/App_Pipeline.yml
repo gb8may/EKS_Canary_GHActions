@@ -62,7 +62,7 @@ jobs:
       
       - name: Wait for deployment to stabilize
         run: |
-          kubectl rollout status deployment/hello-1-0-0
+          kubectl rollout status deployment/hello-1-0-0 -n canary-deploy
 
       - name: Scale canary replicas
         if: success()
@@ -86,7 +86,7 @@ jobs:
       - name: Wait for production deployment to stabilize
         if: success()
         run: |
-          kubectl rollout status deployment/hello-1-1-0
+          kubectl rollout status deployment/hello-1-1-0 -n canary-deploy
 
       - name: Resize production replicas
         if: success()
